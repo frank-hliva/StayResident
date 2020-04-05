@@ -13,8 +13,8 @@ You have to edit `App.toml` file, for example:
 ```toml
 [Startup]
 	paths = [
-		'c:\totalcmd\TOTALCMD64.EXE',
-		'c:\windows\NOTEPAD.EXE'
+		'c:\PlutonX\Server\PlutonCoreApp.exe',
+		'c:\PlutonX\AgencyDB\Server\AgencyDB.exe'
 	]
 ```
   
