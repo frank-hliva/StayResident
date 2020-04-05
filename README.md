@@ -1,6 +1,6 @@
 # StayResident
 
-The application uses executable files like windows services
+The application uses normal executables like windows services
 
 ## Motivation
 
