@@ -8,7 +8,7 @@ Developing of windows services was little bit more difficult than creation norma
 
 ## Using
 
-You have to edit App.toml file, for example:
+You have to edit `App.toml` file, for example:
 
 ```toml
 [Startup]
@@ -18,4 +18,4 @@ You have to edit App.toml file, for example:
 	]
 ```
   
-And after you need to start StayResident.exe
+And after you need to start `StayResident.exe`
