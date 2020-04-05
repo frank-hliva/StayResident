@@ -8,7 +8,7 @@ Developing windows services was little bit more difficult than creation normal a
 
 ## Using
 
-You have to edit `App.toml` file, for example:
+You have to edit `App.toml` file (for example):
 
 ```toml
 [Startup]
