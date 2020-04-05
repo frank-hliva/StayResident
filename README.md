@@ -4,7 +4,7 @@ The application uses normal executables like windows services
 
 ## Motivation
 
-Developing windows services was little bit more difficult than creation normal applications for me. And i don't liked them, because it was boring. I needed something for manage running processes in a background on my server, something what runs crashed process again.
+Developing windows services was little bit more difficult than creation normal applications for me. And i don't liked them, because it was boring. I needed something for manage running processes in a background on my server, something what runs a crashed process again.
 
 ## Using
 
