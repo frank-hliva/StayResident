@@ -15,6 +15,6 @@ You have to edit App.toml file, for example:
 	paths = [
 		'c:\totalcmd\TOTALCMD64.EXE',
 		'c:\windows\NOTEPAD.EXE'
-	]
+	]```
   
 And after you need to start StayResident.exe
