@@ -110,8 +110,6 @@ void Starter::startOnce()
     maybeLog(result.exitCode == 0 ? L"Stop" : L"Crash", out.str());
 }
 
-#include <stdint.h>
-
 void Starter::start()
 {
     do
