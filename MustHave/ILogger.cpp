@@ -3,15 +3,28 @@
 
 namespace Logging {
 
-	ILogger::ILogger(wostream* outputStream)
-		: outputStream(outputStream)
+	ILogger::ILogger(shared_ptr<vector<shared_ptr<wostream>>> outputStreams)
+		: outputStreams(outputStreams)
 	{
+	}
+
+	ILogger::ILogger(shared_ptr<wostream> outputStream)
+		: outputStreams(new vector<shared_ptr<wostream>> { outputStream })
+	{
+	}
+
+	void ILogger::writeToAllStreams(LogItem item)
+	{
+		for (auto outputStream : *outputStreams)
+		{
+			write(outputStream, item);
+			outputStream->flush();
+		}
 	}
 
 	void ILogger::log(LogItem item)
 	{
-		write(outputStream, item);
-		outputStream->flush();
+		writeToAllStreams(item);
 	}
 
 	void ILogger::log(wstring subject, wstring value)

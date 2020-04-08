@@ -9,9 +9,10 @@ namespace Logging {
 	class Logger : public ILogger
 	{
 	protected:
-		virtual void write(wostream* outputStream, LogItem item) override;
+		virtual void write(shared_ptr<wostream> outputStream, LogItem item) override;
 	public:
-		Logger(wostream* outputStream);
+		Logger(shared_ptr<wostream> outputStream);
+		Logger(shared_ptr<vector<shared_ptr<wostream>>> outputStreams);
 	};
 
 }

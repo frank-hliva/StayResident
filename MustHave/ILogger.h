@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace Logging {
 
@@ -15,10 +16,12 @@ namespace Logging {
 	class ILogger
 	{
 	protected:
-		wostream* outputStream;
-		virtual void write(wostream* outputStream, LogItem item) = 0;
+		shared_ptr<vector<shared_ptr<wostream>>> outputStreams;
+		virtual void write(shared_ptr<wostream> outputStream, LogItem item) = 0;
+		virtual void writeToAllStreams(LogItem item);
 	public:
-		ILogger(wostream* outputStream);
+		ILogger(shared_ptr<wostream> outputStream);
+		ILogger(shared_ptr<vector<shared_ptr<wostream>>> outputStreams);
 		void log(LogItem item);
 		void log(wstring subject, wstring value);
 		void log(wstring value);
