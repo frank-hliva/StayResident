@@ -157,12 +157,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ApplicationConfig.cpp" />
     <ClCompile Include="Starter.cpp" />
     <ClCompile Include="StartupManager.cpp" />
     <ClCompile Include="ExecutionFailed.cpp" />
     <ClCompile Include="StayResident.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApplicationConfig.h" />
     <ClInclude Include="Starter.h" />
     <ClInclude Include="StartupManager.h" />
     <ClInclude Include="ExecutionFailed.h" />
