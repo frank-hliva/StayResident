@@ -1,4 +1,4 @@
-# StayResident
+# StayResident 2.1
 
 The application uses normal executables like windows services
 
@@ -12,10 +12,21 @@ You have to edit `App.toml` file (for example):
 
 ```toml
 [Startup]
-	paths = [
+	executables_paths = [
 		'c:\PlutonX\Server\PlutonCoreApp.exe',
 		'c:\PlutonX\AgencyDB\Server\AgencyDB.exe'
 	]
+	
+[Logging]
+	log_file_path = '$APP_DIR/Startup.log'
+	
+[Logging.Targets]
+	standard_output = true
+	file = true
 ```
   
 And after you need to start `StayResident.exe`
+
+## License:
+
+https://github.com/frank-hliva/StayResident/blob/master/LICENSE.md
