@@ -2,9 +2,9 @@
 
 namespace Errors
 {
-    ExecutionFailed::ExecutionFailed(string message, unsigned int errorCode)
-        : Exception(message)
-        : errorCode()
+    ExecutionFailed::ExecutionFailed(string message, unsigned int errorCode) :
+        Exception(message),
+        errorCode()
     {
     }
 

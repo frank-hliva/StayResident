@@ -23,7 +23,7 @@ ExecutionResult Starter::execute(wstring path)
     securityAttributes.bInheritHandle = true;
     securityAttributes.lpSecurityDescriptor = nullptr;
 
-    createPipes(securityAttributes);
+    auto pipeCreationState = createPipes(securityAttributes);
 
     PROCESS_INFORMATION processInfo;
     ZeroMemory(&processInfo, sizeof(PROCESS_INFORMATION));
@@ -31,8 +31,21 @@ ExecutionResult Starter::execute(wstring path)
     STARTUPINFO startupInfo;
     ZeroMemory(&startupInfo, sizeof(STARTUPINFO));
     startupInfo.cb = sizeof(STARTUPINFO);
-    startupInfo.hStdError = childProcessStdOutWrite;
-    startupInfo.hStdOutput = childProcessStdOutWrite;
+
+    switch (pipeCreationState)
+    {
+        case PipeCreationState::success: {
+            startupInfo.hStdError = childProcessStdOutWrite;
+            startupInfo.hStdOutput = childProcessStdOutWrite;
+        }
+        case PipeCreationState::pipeIsBusy: {
+            CloseHandle(childProcessStdOutWrite);
+            startupInfo.hStdError = GetStdHandle(STD_OUTPUT_HANDLE);
+            startupInfo.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+        }
+    }
+
+
     startupInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
     startupInfo.dwFlags |= STARTF_USESTDHANDLES;
 
