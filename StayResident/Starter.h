@@ -19,11 +19,17 @@ struct ExecutionResult {
     unsigned long exitCode = 0;
 };
 
+enum PipeCreationState
+{
+    success,
+    pipeIsBusy
+};
+
 class Starter {
 private:
     HANDLE childProcessStdOutWrite = nullptr;
     HANDLE childProcessStdOutRead = nullptr;
-    void createPipes(SECURITY_ATTRIBUTES& securityAttributes);
+    PipeCreationState createPipes(SECURITY_ATTRIBUTES& securityAttributes);
     void closePipes();
     string readFromChildProcessOutput();
     void maybeLog(wstring name, wstring value);

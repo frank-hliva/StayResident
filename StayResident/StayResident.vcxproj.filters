@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Errors">
       <UniqueIdentifier>{daf1792a-9416-4a9c-be40-f71efef1218a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Config">
+      <UniqueIdentifier>{8025b441-d7f8-4299-a5e1-726851fbd0d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Config">
+      <UniqueIdentifier>{ade244b5-f49c-4896-8c10-98f2faa025ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StayResident.cpp">
@@ -34,7 +40,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ApplicationConfig.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Config</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,7 +54,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ApplicationConfig.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

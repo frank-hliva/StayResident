@@ -26,7 +26,7 @@ namespace IO
                 SetLastError(ERROR_INVALID_PARAMETER);
                 return false;
             }
-            HANDLE readPipeHandle = CreateNamedPipeW(
+            auto readPipeHandle = CreateNamedPipeW(
                 pipeName.c_str(),
                 PIPE_ACCESS_INBOUND | readMode,
                 PIPE_TYPE_BYTE | PIPE_WAIT,
@@ -52,6 +52,7 @@ namespace IO
             if (writePipeHandle == INVALID_HANDLE_VALUE)
             {
                 unsigned long errorCode = GetLastError();
+                cout << errorCode << endl;
                 CloseHandle(readPipeHandle);
                 SetLastError(errorCode);
                 return false;

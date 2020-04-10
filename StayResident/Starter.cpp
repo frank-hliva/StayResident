@@ -6,8 +6,7 @@
 #include "CreatePipeEx.h"
 #include "ExecutionFailed.h"
 
-Starter::Starter(StarterProps props, shared_ptr<Logging::ILogger> logger)
-    :
+Starter::Starter(StarterProps props, shared_ptr<Logging::ILogger> logger) :
     props(props),
     _path(props.path),
     path(_path),
@@ -69,7 +68,7 @@ ExecutionResult Starter::execute(wstring path)
 string Starter::readFromChildProcessOutput()
 {
     unsigned long bytesCount;
-    char* charBuffer = new char[maxBufferSize + 1L];
+    char* charBuffer = new char[1L + maxBufferSize];
     bool isSuccess = ReadFile(childProcessStdOutRead, charBuffer, maxBufferSize, &bytesCount, nullptr);
     charBuffer[bytesCount] = '\0';
     string outputString(charBuffer);
@@ -77,25 +76,40 @@ string Starter::readFromChildProcessOutput()
     return outputString;
 }
 
-void Starter::createPipes(SECURITY_ATTRIBUTES& securityAttributes)
+enum PipeCreationState Starter::createPipes(SECURITY_ATTRIBUTES& securityAttributes)
 {
     childProcessStdOutWrite = nullptr;
     childProcessStdOutRead = nullptr;
-    if (!IO::Pipes::CreatePipeW(
+    if (IO::Pipes::CreatePipeW(
         &childProcessStdOutRead,
         &childProcessStdOutWrite,
         &securityAttributes,
         0,
         0,
         0,
-        L"\\\\.\\pipe\\stdoutpipe"
+        L"\\\\.\\pipe\\stdOutPipe"
     ))
     {
-        throw Errors::ExecutionFailed("A output pipe isn't created.");
+        if (SetHandleInformation(childProcessStdOutRead, HANDLE_FLAG_INHERIT, 0))
+        {
+            return PipeCreationState::success;
+        }
+        else
+        {
+            throw Errors::ExecutionFailed(GetLastError());
+        }
     }
-    if (!SetHandleInformation(childProcessStdOutRead, HANDLE_FLAG_INHERIT, 0))
+    else
     {
-        throw Errors::ExecutionFailed();
+        unsigned int errorCode = GetLastError();
+        if (errorCode == ERROR_PIPE_BUSY)
+        {
+            return pipeIsBusy;
+        }
+        else
+        {
+            throw Errors::ExecutionFailed("A output pipe isn't created.", errorCode);
+        }
     }
 }
 
