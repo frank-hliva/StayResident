@@ -4,7 +4,7 @@ The application uses normal executables like windows services
 
 ## Binary package
 
-[StayResident2.1exe.zip](https://github.com/frank-hliva/StayResident/raw/master/StayResident2.1.zip)
+[StayResident2.11exe.zip](https://github.com/frank-hliva/StayResident/raw/master/StayResident2.11exe.zip)
 
 ## Motivation
 

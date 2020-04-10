@@ -23,8 +23,6 @@ ExecutionResult Starter::execute(wstring path)
     securityAttributes.bInheritHandle = true;
     securityAttributes.lpSecurityDescriptor = nullptr;
 
-    auto pipeCreationState = createPipes(securityAttributes);
-
     PROCESS_INFORMATION processInfo;
     ZeroMemory(&processInfo, sizeof(PROCESS_INFORMATION));
 
@@ -32,19 +30,17 @@ ExecutionResult Starter::execute(wstring path)
     ZeroMemory(&startupInfo, sizeof(STARTUPINFO));
     startupInfo.cb = sizeof(STARTUPINFO);
 
-    switch (pipeCreationState)
+    switch (createPipes(securityAttributes))
     {
-        case PipeCreationState::success: {
+        case PipeCreationState::Success: {
             startupInfo.hStdError = childProcessStdOutWrite;
             startupInfo.hStdOutput = childProcessStdOutWrite;
         }
-        case PipeCreationState::pipeIsBusy: {
-            CloseHandle(childProcessStdOutWrite);
-            startupInfo.hStdError = GetStdHandle(STD_OUTPUT_HANDLE);
+        case PipeCreationState::PipeIsBusy: {
+            startupInfo.hStdError = childProcessStdOutWrite;
             startupInfo.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
         }
     }
-
 
     startupInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
     startupInfo.dwFlags |= STARTF_USESTDHANDLES;
@@ -70,11 +66,9 @@ ExecutionResult Starter::execute(wstring path)
  
     ExecutionResult result;
     result.exitCode = exitCode;
-
     result.output = readFromChildProcessOutput();
 
     closePipes();
-
     return result;
 }
 
@@ -89,7 +83,7 @@ string Starter::readFromChildProcessOutput()
     return outputString;
 }
 
-enum PipeCreationState Starter::createPipes(SECURITY_ATTRIBUTES& securityAttributes)
+enum class PipeCreationState Starter::createPipes(SECURITY_ATTRIBUTES& securityAttributes)
 {
     childProcessStdOutWrite = nullptr;
     childProcessStdOutRead = nullptr;
@@ -105,7 +99,7 @@ enum PipeCreationState Starter::createPipes(SECURITY_ATTRIBUTES& securityAttribu
     {
         if (SetHandleInformation(childProcessStdOutRead, HANDLE_FLAG_INHERIT, 0))
         {
-            return PipeCreationState::success;
+            return PipeCreationState::Success;
         }
         else
         {
@@ -117,7 +111,7 @@ enum PipeCreationState Starter::createPipes(SECURITY_ATTRIBUTES& securityAttribu
         unsigned int errorCode = GetLastError();
         if (errorCode == ERROR_PIPE_BUSY)
         {
-            return pipeIsBusy;
+            return PipeCreationState::PipeIsBusy;
         }
         else
         {
