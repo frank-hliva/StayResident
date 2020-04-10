@@ -1,4 +1,4 @@
-# StayResident 2.1
+# StayResident 2.11
 
 The application uses normal executables like windows services
 
@@ -34,4 +34,3 @@ And after you need to start `StayResident.exe`
 ## License:
 
 https://github.com/frank-hliva/StayResident/blob/master/LICENSE.md
-
