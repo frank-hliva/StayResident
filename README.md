@@ -2,9 +2,9 @@
 
 The application uses normal executables like windows services
 
-## Binaries
+## Binary package
 
-https://github.com/frank-hliva/StayResident/raw/master/StayResident2.1.zip
+[StayResident2.1exe.zip](https://github.com/frank-hliva/StayResident/raw/master/StayResident2.1.zip)
 
 ## Motivation
 
