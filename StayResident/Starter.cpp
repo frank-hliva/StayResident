@@ -1,48 +1,40 @@
 #include "Starter.h"
-#include <cstdio>
 #include <windows.h> 
-#include <stdio.h>
 #include <iostream>
 #include <sstream>
+#include <Path.h>
+#include "CreatePipeEx.h"
 #include "ExecutionFailed.h"
 
-string Starter::readChildProcessOutput(const int maxBufferSize)
+Starter::Starter(StarterProps props, shared_ptr<Logging::ILogger> logger)
+    :
+    props(props),
+    _path(props.path),
+    path(_path),
+    repeatStart(props.repeatStart),
+    wasStarted(_wasStarted),
+    logger(logger)
 {
-    unsigned long bytesCount, dwWritten;
-    char* charBuffer = new char[(long int)maxBufferSize + (long int)1];
-    bool isSuccess = false; 
-    isSuccess = ReadFile(childStdOutReadPipe, charBuffer, maxBufferSize, &bytesCount, nullptr);
-    charBuffer[bytesCount] = '\0';
-    string outputString(charBuffer);
-    delete[] charBuffer;
-    return outputString;
 }
 
 ExecutionResult Starter::execute(wstring path)
 {
-    childStdOutReadPipe = nullptr;
-    childProcessStdOut = nullptr;
     SECURITY_ATTRIBUTES securityAttributes;
     securityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
     securityAttributes.bInheritHandle = true;
     securityAttributes.lpSecurityDescriptor = nullptr;
 
-    if (!CreatePipe(&childStdOutReadPipe, &childProcessStdOut, &securityAttributes, 0)) {
-        throw Errors::ExecutionFailed("A pipe isn't created");
-    }
-
-    if (!SetHandleInformation(childStdOutReadPipe, HANDLE_FLAG_INHERIT, 0)) {
-        throw Errors::ExecutionFailed();
-    }
+    createPipes(securityAttributes);
 
     PROCESS_INFORMATION processInfo;
-    STARTUPINFO startupInfo;
-
     ZeroMemory(&processInfo, sizeof(PROCESS_INFORMATION));
+
+    STARTUPINFO startupInfo;
     ZeroMemory(&startupInfo, sizeof(STARTUPINFO));
     startupInfo.cb = sizeof(STARTUPINFO);
-    startupInfo.hStdError = childProcessStdOut;
-    startupInfo.hStdOutput = childProcessStdOut;
+    startupInfo.hStdError = childProcessStdOutWrite;
+    startupInfo.hStdOutput = childProcessStdOutWrite;
+    startupInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
     startupInfo.dwFlags |= STARTF_USESTDHANDLES;
 
     CreateProcessW(
@@ -53,7 +45,7 @@ ExecutionResult Starter::execute(wstring path)
         true,
         0,
         nullptr,
-        nullptr,
+        IO::Path::onlyDirectoryName(path).c_str(),
         &startupInfo,
         &processInfo
     );
@@ -67,21 +59,50 @@ ExecutionResult Starter::execute(wstring path)
     ExecutionResult result;
     result.exitCode = exitCode;
 
-    result.output = ""; //readChildProcessOutput(4096);
-    CloseHandle(childProcessStdOut);
-    CloseHandle(childStdOutReadPipe);
+    result.output = readFromChildProcessOutput();
+
+    closePipes();
+
     return result;
 }
 
-Starter::Starter(StarterProps props, shared_ptr<Logging::ILogger> logger)
-    :
-        props(props),
-        _path(props.path),
-        path(_path),
-        repeatStart(props.repeatStart),
-        wasStarted(_wasStarted),
-        logger(logger)
+string Starter::readFromChildProcessOutput()
 {
+    unsigned long bytesCount;
+    char* charBuffer = new char[maxBufferSize + 1L];
+    bool isSuccess = ReadFile(childProcessStdOutRead, charBuffer, maxBufferSize, &bytesCount, nullptr);
+    charBuffer[bytesCount] = '\0';
+    string outputString(charBuffer);
+    delete[] charBuffer;
+    return outputString;
+}
+
+void Starter::createPipes(SECURITY_ATTRIBUTES& securityAttributes)
+{
+    childProcessStdOutWrite = nullptr;
+    childProcessStdOutRead = nullptr;
+    if (!IO::Pipes::CreatePipeW(
+        &childProcessStdOutRead,
+        &childProcessStdOutWrite,
+        &securityAttributes,
+        0,
+        0,
+        0,
+        L"\\\\.\\pipe\\stdoutpipe"
+    ))
+    {
+        throw Errors::ExecutionFailed("A output pipe isn't created.");
+    }
+    if (!SetHandleInformation(childProcessStdOutRead, HANDLE_FLAG_INHERIT, 0))
+    {
+        throw Errors::ExecutionFailed();
+    }
+}
+
+void Starter::closePipes()
+{
+    CloseHandle(childProcessStdOutWrite);
+    CloseHandle(childProcessStdOutRead);
 }
 
 void Starter::maybeLog(wstring subject, wstring value)

@@ -15,17 +15,20 @@ struct StarterProps {
 };
 
 struct ExecutionResult {
-    string output;
-    unsigned long exitCode;
+    string output = "";
+    unsigned long exitCode = 0;
 };
 
 class Starter {
 private:
-    HANDLE childStdOutReadPipe = nullptr;
-    HANDLE childProcessStdOut = nullptr;
-    string readChildProcessOutput(const int maxBufferSize);
+    HANDLE childProcessStdOutWrite = nullptr;
+    HANDLE childProcessStdOutRead = nullptr;
+    void createPipes(SECURITY_ATTRIBUTES& securityAttributes);
+    void closePipes();
+    string readFromChildProcessOutput();
     void maybeLog(wstring name, wstring value);
 protected:
+    const int maxBufferSize = 4096;
     wstring _path;
     bool _wasStarted = false;
     shared_ptr<Logging::ILogger> logger;

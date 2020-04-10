@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationInfo.h" />
+    <ClInclude Include="CreatePipeEx.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ILogger.h" />
@@ -157,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApplicationInfo.cpp" />
+    <ClCompile Include="CreatePipeEx.cpp" />
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="ILogger.cpp" />
     <ClCompile Include="Logger.cpp" />

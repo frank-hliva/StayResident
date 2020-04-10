@@ -13,5 +13,6 @@ namespace IO
 	{
 	public:
 		static wstring join(wstring path1, wstring path2);
+		static wstring onlyDirectoryName(wstring path);
 	};
 }

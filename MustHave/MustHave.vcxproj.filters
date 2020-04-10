@@ -54,6 +54,9 @@
     <ClInclude Include="ApplicationInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CreatePipeEx.h">
+      <Filter>Header Files\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MustHave.cpp">
@@ -76,6 +79,9 @@
     </ClCompile>
     <ClCompile Include="ApplicationInfo.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatePipeEx.cpp">
+      <Filter>Source Files\IO</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
